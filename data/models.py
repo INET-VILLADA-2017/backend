@@ -38,7 +38,7 @@ class Sample(models.Model):
     state_transmission = models.IntegerField("Estado del transductor",
                                              validators=[MinValueValidator(0), MaxValueValidator(2)])
     nursery = models.ForeignKey(Nursery, on_delete=models.CASCADE, )
-    sample = models.ForeignKey(Param, on_delete=models.CASCADE)
+    param = models.ForeignKey(Param, on_delete=models.CASCADE)
     history = HistoricalRecords()
 
     def __str__(self):
