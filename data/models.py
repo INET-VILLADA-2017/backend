@@ -8,7 +8,6 @@ from simple_history.models import HistoricalRecords
 
 # Create your models here.
 
-
 class Nursery(models.Model):
     denomination = models.CharField("Denominacion del vivero", max_length=255)
     business_name = models.CharField("Empresa propietaria del establecimiento", max_length=255)
@@ -16,13 +15,33 @@ class Nursery(models.Model):
     address = models.CharField("Direccion del vivero", max_length=255)
     history = HistoricalRecords()
 
+    class Meta:
+        verbose_name_plural = "Viveros"
+
     def __str__(self):
         return self.business_name
+
+
+class Device(models.Model):
+    url = models.URLField("Url del dispositivo", default="")
+    nursery = models.ForeignKey(Nursery)
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name_plural = "Dispositivos"
+
+    def __str__(self):
+        return "{url} {nursery}"
 
 
 class Param(models.Model):
     name = models.CharField("Nombre del parametro", max_length=255)
     description = models.TextField("Descripcion")
+    color = models.CharField("Color del paramentro", max_length=255)
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name_plural = "Parametros"
 
     def __str__(self):
         return self.name
@@ -35,11 +54,14 @@ class Sample(models.Model):
     state_transducer = models.IntegerField("Estado del transductor",
                                            validators=[MinValueValidator(0), MaxValueValidator(2)])
     duration = models.CharField("Duracion", max_length=64)
-    state_transmission = models.IntegerField("Estado del transductor",
+    state_transmission = models.IntegerField("Estado de la trasmision",
                                              validators=[MinValueValidator(0), MaxValueValidator(2)])
     nursery = models.ForeignKey(Nursery, on_delete=models.CASCADE, )
     param = models.ForeignKey(Param, on_delete=models.CASCADE)
     history = HistoricalRecords()
+
+    class Meta:
+        verbose_name_plural = "Registros"
 
     def __str__(self):
         return "{value} {unit} {nursery}".format(
