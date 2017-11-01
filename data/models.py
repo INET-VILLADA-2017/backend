@@ -22,16 +22,34 @@ class Nursery(models.Model):
         return self.business_name
 
 
+class Config(models.Model):
+    spray_volume = models.DecimalField("Volumen de rociado", max_digits=6, decimal_places=4, default=4)
+    degree_of_shadow = models.DecimalField("Grado de sombra", max_digits=6, decimal_places=4, default=8)
+    watering_period_1 = models.DecimalField("Periodo de regado uno", max_digits=6, decimal_places=4, default=5)
+    watering_period_2 = models.DecimalField("Periodo de regado dos", max_digits=6, decimal_places=4, default=5)
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name_plural = "Configuraciones"
+
+    def __str__(self):
+        return "{}".format(self.spray_volume)
+
+
 class Device(models.Model):
     url = models.URLField("Url del dispositivo", default="")
     nursery = models.ForeignKey(Nursery)
+    config = models.OneToOneField(Config)
     history = HistoricalRecords()
 
     class Meta:
         verbose_name_plural = "Dispositivos"
 
     def __str__(self):
-        return "{url} {nursery}"
+        return "{url} {nursery}".format(
+            url=self.url,
+            nursery=self.nursery.business_name
+        )
 
 
 class Param(models.Model):
